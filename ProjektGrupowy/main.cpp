@@ -12,6 +12,7 @@
 using namespace std;
 
 double obliczSrednia(const int oceny[], int rozmiar);
+string okreslOceneKoncowa(double srednia);
 
 struct STUDENT {
     string imieNazwisko;
@@ -40,19 +41,20 @@ int main() {
                 iss >> student.oceny[i]; // pobieramy oceny jako inty z pliku dla każdego studenta
             }
             student.srednia = obliczSrednia(student.oceny, 6);
+            student.ocenaKoncowa = okreslOceneKoncowa(student.srednia);
             studenci.push_back(student);
         }
     }
     plik.close();
 
     // Wyświetlenie wyników
-    cout << "Dane studentów:" << endl;
-    cout << "-------------------------------------------------------" << endl;
-    cout << setw(20) << left << "Imię i nazwisko"
+    cout << "Dane studentow:" << endl;
+    cout << "--------------------------------------------------------------------" << endl;
+    cout << setw(20) << left << "Imie i nazwisko"
     << setw(25) << "Oceny"
-    << setw(10) << "Średnia"
-    << "Ocena końcowa" << endl;
-    cout << "-------------------------------------------------------" << endl;
+    << setw(10) << "Srednia"
+    << "Ocena koncowa" << endl;
+    cout << "--------------------------------------------------------------------" << endl;
     
     for (const auto& student : studenci) {
         cout << setw(20) << left << student.imieNazwisko << " ";
@@ -67,8 +69,9 @@ int main() {
         
         // Wyświetlanie średniej i oceny końcowej
         cout << setw(9) << fixed << setprecision(2) << student.srednia << " ";
+        cout << student.ocenaKoncowa;
         cout << endl;
-//        cout << student.ocenaKoncowa << endl;
+
     }
     
     return 0;
@@ -80,4 +83,12 @@ double obliczSrednia(const int oceny[], int rozmiar) {
         suma += oceny[i];
     }
     return suma / rozmiar;
+}
+string okreslOceneKoncowa(double srednia) {
+    if (srednia >= 91) return "bardzo dobry";
+    else if (srednia >= 81) return "dobry plus";
+    else if (srednia >= 71) return "dobry";
+    else if (srednia >= 61) return "dostateczny plus";
+    else if (srednia >= 51) return "dostateczny";
+    else return "niedostateczny";
 }
