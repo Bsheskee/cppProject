@@ -12,6 +12,8 @@
 using namespace std;
 
 double obliczSrednia(const int oceny[], int rozmiar);
+double obliczSredniaWszystkich(double suma, int rozmiar);
+double wynikPowyzejSredniej(double sredniaStudenta, double sredniaStudentow);
 string okreslOceneKoncowa(double srednia);
 
 struct STUDENT {
@@ -24,6 +26,8 @@ struct STUDENT {
 int main() {
     ifstream plik("dane.txt");
     vector<STUDENT> studenci;
+    double sumaOcenWszystkich = 0.0;
+    double sredniaWszystkich = 0.0;
     
     if (!plik.is_open()) {
         cerr << "Nie mozna otworzyc pliku!" << endl;
@@ -42,18 +46,21 @@ int main() {
             }
             student.srednia = obliczSrednia(student.oceny, 6);
             student.ocenaKoncowa = okreslOceneKoncowa(student.srednia);
+            sumaOcenWszystkich += student.srednia;
+            
             studenci.push_back(student);
         }
     }
     plik.close();
+    sredniaWszystkich = obliczSredniaWszystkich(sumaOcenWszystkich, int(studenci.size()));
 
     // Wyświetlenie wyników
     cout << "Dane studentow:" << endl;
     cout << "--------------------------------------------------------------------" << endl;
     cout << setw(20) << left << "Imie i nazwisko"
-    << setw(25) << "Oceny"
-    << setw(10) << "Srednia"
-    << "Ocena koncowa" << endl;
+        << setw(25) << "Oceny"
+        << setw(10) << "Srednia"
+        << "Ocena koncowa" << endl;
     cout << "--------------------------------------------------------------------" << endl;
     
     for (const auto& student : studenci) {
@@ -73,7 +80,18 @@ int main() {
         cout << endl;
 
     }
-    
+    cout << "--------------------------------------------------------------------" << endl;
+    cout << "srednia studentow = " << sredniaWszystkich << endl;
+    cout << "Studenci powyzej sredniej: " << endl;
+    cout << "--------------------------------------------------------------------" << endl;
+
+    for (const auto& student : studenci) {
+        if (wynikPowyzejSredniej(student.srednia, sredniaWszystkich) > sredniaWszystkich) {
+            cout << setw(20) << left << student.imieNazwisko << " ";
+            cout << setw(3) << fixed << setprecision(2) << student.srednia << " ";
+            cout << endl;
+        }
+    }
     return 0;
 }
 
@@ -84,6 +102,17 @@ double obliczSrednia(const int oceny[], int rozmiar) {
     }
     return suma / rozmiar;
 }
+double obliczSredniaWszystkich(double suma, int rozmiar) {
+    return suma / rozmiar;
+}
+double wynikPowyzejSredniej(double sredniaStudenta, double sredniaStudentow) {
+    double wynikPowyzejSredniej = 0.0;
+    if (sredniaStudenta > sredniaStudentow) {
+        wynikPowyzejSredniej = sredniaStudenta;
+    }
+    return wynikPowyzejSredniej;
+}
+
 string okreslOceneKoncowa(double srednia) {
     if (srednia >= 91) return "bardzo dobry";
     else if (srednia >= 81) return "dobry plus";
