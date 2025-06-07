@@ -1,0 +1,54 @@
+# Compiled binaries
+*.exe
+*.out
+*.app
+*.o
+*.obj
+a.out
+
+# IDE specific files
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Visual Studio
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.suo
+*.user
+.vs/
+
+# Code::Blocks
+*.cbp
+*.layout
+*.depend
+
+# CLion
+.idea/
+cmake-build-*/
+
+# VS Code
+.vscode/
+
+# Build directories
+build/
+debug/
+release/
+bin/
+obj/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*~
+*.swp
+*.tmp
