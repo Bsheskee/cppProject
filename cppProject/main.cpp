@@ -27,7 +27,6 @@ string okreslOceneKoncowa(double srednia);
 
 
 int main() {
-    ifstream plik("dane.txt");
     vector<STUDENT> studenci;
     
     // 1. Wczytanie danych
