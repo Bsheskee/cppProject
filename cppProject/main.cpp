@@ -25,6 +25,7 @@ double wynikPowyzejSredniej(double sredniaStudenta, double sredniaStudentow);
 int liczbaStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double srednia);
 vector<STUDENT> znajdzStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double progSredniej);
 bool zapiszDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku);
+void wyszukajIWyswietlStudenta(const vector<STUDENT>& studenci);
 string okreslOceneKoncowa(double srednia);
 
 
@@ -77,6 +78,7 @@ int main() {
     cout << "--------------------------------------------------------------------" << endl;
 
     vector<STUDENT> powyzejSredniej;
+    // 1 petla do dwoch zastosowan: 1 wyswietlanie, 2 przechowanie tych powSr do zapisu (zamiast dwoch petli)
 
     cout << "Studenci powyzej sredniej:" << endl;
     for (const auto& student : studenci) {
@@ -92,6 +94,10 @@ int main() {
     if (zapiszDoPliku(powyzejSredniej, "powyzej_sredniej.txt")) {
         cout << "Zapisano studentow powyżej sredniej" << endl;
     }
+    cout << endl;
+    
+    // Wyszukiwanie
+    wyszukajIWyswietlStudenta(studenci);
    
     return 0;
 }
@@ -189,6 +195,39 @@ bool zapiszDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku) {
     return true;
 }
 
+void wyszukajIWyswietlStudenta(const vector<STUDENT>& studenci) {
+    string szukaneImieNazwisko;
+    
+    cout << "ABY WYSZUKAC STUDENTA, PODAJ IMIE I NAZWISKO: ";
+    getline(cin, szukaneImieNazwisko);
+    
+    bool znaleziono = false;
+    for (const auto& student : studenci) {
+        if (student.imieNazwisko == szukaneImieNazwisko) {
+            cout << "\n=== ZNALEZIONO STUDENTA ===" << endl;
+            cout << "Imię i nazwisko: " << student.imieNazwisko << endl;
+            cout << "Średnia: " << fixed << setprecision(2) << student.srednia << endl;
+            
+            // Dla tablicy int oceny[6]:
+            cout << "Oceny: ";
+            for (int i = 0; i < 6; i++) {  // 6 to rozmiar tablicy
+                if (student.oceny[i] != 0) {  // Zakładając że 0 = brak oceny
+                    cout << student.oceny[i] << " ";
+                }
+            }
+            cout << endl;
+            
+            znaleziono = true;
+            break;
+        }
+    }
+    cout << endl;
+    
+    if (!znaleziono) {
+        cout << "Nie znaleziono studenta: " << szukaneImieNazwisko << endl;
+    }
+}
+
 string okreslOceneKoncowa(double srednia) {
     if (srednia >= 91) return "bardzo dobry";
     else if (srednia >= 81) return "dobry plus";
@@ -197,3 +236,4 @@ string okreslOceneKoncowa(double srednia) {
     else if (srednia >= 51) return "dostateczny";
     else return "niedostateczny";
 }
+
