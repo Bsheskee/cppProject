@@ -23,30 +23,30 @@ double obliczSrednia(const int oceny[], int rozmiar);
 double obliczSredniaWszystkich(const vector<STUDENT>& studenci);
 double wynikPowyzejSredniej(double sredniaStudenta, double sredniaStudentow);
 int liczbaStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double srednia);
+vector<STUDENT> znajdzStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double progSredniej);
+bool zapiszDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku);
 string okreslOceneKoncowa(double srednia);
 
 
 int main() {
     vector<STUDENT> studenci;
     
-    // 1. Wczytanie danych
+    // Wczytanie danych
     if (!wczytajDane("dane.txt", studenci)) {
         return 1;
     }
     
-    // 2. Obliczenie średnich i ocen
-    for (auto& student : studenci) {
+    // Obliczenie srednich i ocen
+    for (auto& student : studenci) { // od C++11; automatyczne wykrycie typu
         student.srednia = obliczSrednia(student.oceny, 6);
         student.ocenaKoncowa = okreslOceneKoncowa(student.srednia);
     }
     
-    // 3. Obliczenie średniej wszystkich
+    // Obliczenie sredniej wszystkich
     double sredniaWszystkich = obliczSredniaWszystkich(studenci);
     int powyzej = liczbaStudentowPowyzejSredniej(studenci, sredniaWszystkich);
-
-    //
     
-    // Wyświetlenie wyników
+    // Wyswietlenie wynikow
     cout << "Dane studentow:" << endl;
     cout << "--------------------------------------------------------------------" << endl;
     cout << setw(20) << left << "Imie i nazwisko"
@@ -57,8 +57,7 @@ int main() {
     
     for (const auto& student : studenci) {
         cout << setw(20) << left << student.imieNazwisko << " ";
-        
-        // Wyświetlanie ocen
+        // Wyswietlanie ocen
         cout << "[";
         for (int i = 0; i < 6; ++i) {
             cout << student.oceny[i];
@@ -66,25 +65,34 @@ int main() {
         }
         cout << "] ";
         
-        // Wyświetlanie średniej i oceny końcowej
+        // Wyswietlanie sredniej i oceny koncowej
         cout << setw(9) << fixed << setprecision(2) << student.srednia << " ";
         cout << student.ocenaKoncowa;
         cout << endl;
 
     }
     cout << "--------------------------------------------------------------------" << endl;
-    cout << "srednia studentow = " << sredniaWszystkich << endl;
+    cout << "Srednia wszystkich studentow = " << sredniaWszystkich << endl;
     cout << "Ilosc studentow powyzej sredniej: " << powyzej << endl;
-    cout << "Studenci powyzej sredniej: " << endl;
     cout << "--------------------------------------------------------------------" << endl;
 
+    vector<STUDENT> powyzejSredniej;
+
+    cout << "Studenci powyzej sredniej:" << endl;
     for (const auto& student : studenci) {
-        if (wynikPowyzejSredniej(student.srednia, sredniaWszystkich) > sredniaWszystkich) {
+        if (student.srednia > sredniaWszystkich) {
             cout << setw(20) << left << student.imieNazwisko << " ";
-            cout << setw(3) << fixed << setprecision(2) << student.srednia << " ";
-            cout << endl;
+            cout << setw(3) << fixed << setprecision(2) << student.srednia << endl;
+            
+            powyzejSredniej.push_back(student); // Dodaj do wektora do zapisu, na koniec
         }
     }
+    cout << "--------------------------------------------------------------------" << endl;
+
+    if (zapiszDoPliku(powyzejSredniej, "powyzej_sredniej.txt")) {
+        cout << "Zapisano studentow powyżej sredniej" << endl;
+    }
+   
     return 0;
 }
 // boolean bo chcemy dalsze operacje przeprowadzac jedynie wtedy gdy udalo sie wczytac dane z pliku
@@ -125,7 +133,7 @@ double obliczSredniaWszystkich(const vector<STUDENT>& studenci) {
     if (studenci.empty()) return 0;
     
     double suma = 0;
-    for (const auto& student : studenci) { // od C++11; automatyczne wykrycie typu; & unikamy kopiowania
+    for (const auto& student : studenci) {
         suma += student.srednia;
     }
     return suma / studenci.size();
@@ -142,6 +150,43 @@ double wynikPowyzejSredniej(double sredniaStudenta, double sredniaStudentow) {
 int liczbaStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double srednia) {
     return count_if(studenci.begin(), studenci.end(),
         [srednia](const STUDENT& s) { return s.srednia > srednia; });
+}
+
+vector<STUDENT> znajdzStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double progSredniej) {
+    vector<STUDENT> wynik;
+    
+    for (const auto& student : studenci) {
+        if (student.srednia > progSredniej) {
+            wynik.push_back(student);
+        }
+    }
+    
+    return wynik;
+}
+
+
+bool zapiszDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku) {
+    // 1. Stworz plik do zapisu (jesli nie istnieje) i otworz
+    ofstream plik(nazwaPliku);
+    if (!plik) {
+        cout << "Nie można otworzyć pliku!" << endl;
+        return false;
+    }
+    
+    // 2. Zapisz kazdego studenta
+    for (const auto& student : studenci) {
+        plik << student.imieNazwisko << " "
+             << student.srednia << " "
+             << student.ocenaKoncowa << endl;
+    }
+    
+    // 3. Sprawdz czy zapis sie udal
+    if (!plik) {
+        cout << "Błąd podczas zapisu!" << endl;
+        return false;
+    }
+    
+    return true;
 }
 
 string okreslOceneKoncowa(double srednia) {
