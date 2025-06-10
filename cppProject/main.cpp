@@ -133,7 +133,7 @@ double obliczSredniaWszystkich(const vector<STUDENT>& studenci) {
     if (studenci.empty()) return 0;
     
     double suma = 0;
-    for (const auto& student : studenci) {
+    for (const STUDENT& student : studenci) {
         suma += student.srednia;
     }
     return suma / studenci.size();
