@@ -37,7 +37,7 @@ int main() {
     }
     
     // Obliczenie srednich i ocen
-    for (auto& student : studenci) { // od C++11; automatyczne wykrycie typu
+    for (STUDENT& student : studenci) {
         student.srednia = obliczSrednia(student.oceny, 6);
         student.ocenaKoncowa = okreslOceneKoncowa(student.srednia);
     }
