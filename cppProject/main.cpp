@@ -28,6 +28,7 @@ bool zapiszSrednieDoPliku(const vector<STUDENT>& studenci, const string& nazwaPl
 void wyszukajIWyswietlStudenta(const vector<STUDENT>& studenci);
 void zmodyfikujOceneStudenta(vector<STUDENT>& studenci);
 bool zapiszZaktualizowaneDaneDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku);
+void dodajStudenta(vector<STUDENT>& studenci);
 string okreslOceneKoncowa(double srednia);
 
 
@@ -101,11 +102,10 @@ int main() {
     wyszukajIWyswietlStudenta(studenci);
     
     zmodyfikujOceneStudenta(studenci);
-    
+    dodajStudenta(studenci);
     if (zapiszZaktualizowaneDaneDoPliku(studenci, "dane_update.txt")) {
         cout << "Zapisano pełne dane!\n";
     }
-    
     return 0;
 }
 // boolean bo chcemy dalsze operacje przeprowadzac jedynie wtedy gdy udalo sie wczytac dane z pliku
@@ -309,6 +309,22 @@ bool zapiszZaktualizowaneDaneDoPliku(const vector<STUDENT>& studenci, const stri
     }
     
     return true;
+}
+void dodajStudenta(vector<STUDENT>& studenci) {
+    STUDENT nowyStudent;
+    
+    cout << "--- Dodawanie nowego studenta ---" << endl;
+    cout << "Podaj imie i nazwisko nowego studenta: ";
+    getline(cin, nowyStudent.imieNazwisko);
+    cout << "Podaj 6 ocen dla studenta (kazda po kolei):" << endl;
+    for (int i = 0; i < 6; ++i) {
+        nowyStudent.oceny[i] = pobierzIntZWalidacja(
+                                                    "Ocena #" + to_string(i + 1) + ": ",
+                                                    0, 100
+                                                    );
+    }
+    studenci.push_back(nowyStudent);
+    cout << "Student " << nowyStudent.imieNazwisko << " zostal dodany pomyslnie!" << endl;
 }
 
 string okreslOceneKoncowa(double srednia) {
