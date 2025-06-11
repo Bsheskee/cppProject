@@ -24,8 +24,10 @@ double obliczSredniaWszystkich(const vector<STUDENT>& studenci);
 double wynikPowyzejSredniej(double sredniaStudenta, double sredniaStudentow);
 int liczbaStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double srednia);
 vector<STUDENT> znajdzStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double progSredniej);
-bool zapiszDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku);
+bool zapiszSrednieDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku);
 void wyszukajIWyswietlStudenta(const vector<STUDENT>& studenci);
+void zmodyfikujOceneStudenta(vector<STUDENT>& studenci);
+bool zapiszZaktualizowaneDaneDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku);
 string okreslOceneKoncowa(double srednia);
 
 
@@ -91,14 +93,19 @@ int main() {
     }
     cout << "--------------------------------------------------------------------" << endl;
 
-    if (zapiszDoPliku(powyzejSredniej, "powyzej_sredniej.txt")) {
+    if (zapiszSrednieDoPliku(powyzejSredniej, "powyzej_sredniej.txt")) {
         cout << "Zapisano studentow powyżej sredniej" << endl;
     }
     cout << endl;
-    
-    // Wyszukiwanie
+
     wyszukajIWyswietlStudenta(studenci);
-   
+    
+    zmodyfikujOceneStudenta(studenci);
+    
+    if (zapiszZaktualizowaneDaneDoPliku(studenci, "dane_update.txt")) {
+        cout << "Zapisano pełne dane!\n";
+    }
+    
     return 0;
 }
 // boolean bo chcemy dalsze operacje przeprowadzac jedynie wtedy gdy udalo sie wczytac dane z pliku
@@ -170,7 +177,7 @@ vector<STUDENT> znajdzStudentowPowyzejSredniej(const vector<STUDENT>& studenci, 
 }
 
 
-bool zapiszDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku) {
+bool zapiszSrednieDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku) {
     // 1. Stworz plik do zapisu (jesli nie istnieje) i otworz
     ofstream plik(nazwaPliku);
     if (!plik) {
@@ -222,6 +229,86 @@ void wyszukajIWyswietlStudenta(const vector<STUDENT>& studenci) {
     if (!znaleziono) {
         cout << "Nie znaleziono studenta: " << szukaneImieNazwisko << endl;
     }
+}
+int pobierzIntZWalidacja(const string& komunikat, int minVal, int maxVal) {
+    int wartosc;
+    while (true) {
+        cout << komunikat;
+        cin >> wartosc;
+
+        if (cin.fail() || wartosc < minVal || wartosc > maxVal) {
+            cout << "Nieprawidlowa wartosc. Podaj liczbe z zakresu "
+                 << minVal << " do " << maxVal << ": " << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return wartosc;
+        }
+    }
+}
+
+void zmodyfikujOceneStudenta(vector<STUDENT>& studenci) {
+    string szukaneImieNazwisko;
+    bool studentZnaleziony = false;
+    
+    cout << "Podaj imie i nazwisko studenta do zmiany oceny: ";
+    getline(cin, szukaneImieNazwisko);
+    for (auto& s : studenci) {
+        if (s.imieNazwisko == szukaneImieNazwisko) {
+            studentZnaleziony = true;
+            
+            cout << "Bieżące oceny: ";
+            for (size_t i = 0; i < 6; ++i) {
+                cout << (i + 1) << ": " << s.oceny[i] << " ";
+            }
+            cout << endl;
+            
+            int indeksDoZmiany = pobierzIntZWalidacja(
+                                                      "Ktora ocene zmienic (podaj numer, np. 1 dla pierwszej): ",
+                                                      1, 6
+                                                      );
+            int nowaOcena = pobierzIntZWalidacja(
+                                                 "Podaj nowa ocene: ",
+                                                 0, 100
+                                                 );
+            s.oceny[indeksDoZmiany - 1] = nowaOcena;
+            cout << "Ocena zmieniona pomyslnie!" << endl;
+            
+            cout << "Zaktualizowane oceny: ";
+            for (size_t i = 0; i < 6; ++i) {
+                cout << (i + 1) << ": " << s.oceny[i] << " ";
+            }
+            cout << endl;
+            return;
+        }
+        
+    }
+    cout << "Student o podanym imieniu i nazwisku nie znaleziony." << endl;
+}
+
+bool zapiszZaktualizowaneDaneDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku) {
+    ofstream plik(nazwaPliku);
+    if (!plik) {
+        cerr << "Nie można otworzyć pliku " << nazwaPliku << endl;
+        return false;
+    }
+    
+    for (const auto& student : studenci) {
+        plik << student.imieNazwisko << "\n";
+        for (int i = 0; i < 6; ++i) {
+            plik << student.oceny[i];
+            if (i < 5) plik << " ";
+        }
+        plik << "\n";
+    }
+    
+    if (!plik.good()) {
+        cerr << "Błąd podczas zapisu pełnych danych!" << endl;
+        return false;
+    }
+    
+    return true;
 }
 
 string okreslOceneKoncowa(double srednia) {
