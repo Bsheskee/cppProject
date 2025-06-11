@@ -166,7 +166,6 @@ vector<STUDENT> znajdzStudentowPowyzejSredniej(const vector<STUDENT>& studenci, 
             wynik.push_back(student);
         }
     }
-    
     return wynik;
 }
 
@@ -175,7 +174,7 @@ bool zapiszDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku) {
     // 1. Stworz plik do zapisu (jesli nie istnieje) i otworz
     ofstream plik(nazwaPliku);
     if (!plik) {
-        cout << "Nie można otworzyć pliku!" << endl;
+        cout << "Nie mozna otworzyć pliku!" << endl;
         return false;
     }
     
@@ -188,7 +187,7 @@ bool zapiszDoPliku(const vector<STUDENT>& studenci, const string& nazwaPliku) {
     
     // 3. Sprawdz czy zapis sie udal
     if (!plik) {
-        cout << "Błąd podczas zapisu!" << endl;
+        cout << "Blad podczas zapisu!" << endl;
         return false;
     }
     
@@ -205,15 +204,12 @@ void wyszukajIWyswietlStudenta(const vector<STUDENT>& studenci) {
     for (const auto& student : studenci) {
         if (student.imieNazwisko == szukaneImieNazwisko) {
             cout << "\n=== ZNALEZIONO STUDENTA ===" << endl;
-            cout << "Imię i nazwisko: " << student.imieNazwisko << endl;
-            cout << "Średnia: " << fixed << setprecision(2) << student.srednia << endl;
+            cout << "Imie i nazwisko: " << student.imieNazwisko << endl;
+            cout << "Srednia: " << fixed << setprecision(2) << student.srednia << endl;
             
-            // Dla tablicy int oceny[6]:
             cout << "Oceny: ";
-            for (int i = 0; i < 6; i++) {  // 6 to rozmiar tablicy
-                if (student.oceny[i] != 0) {  // Zakładając że 0 = brak oceny
-                    cout << student.oceny[i] << " ";
-                }
+            for (int i = 0; i < 6; i++) {
+                cout << student.oceny[i] << " ";
             }
             cout << endl;
             
