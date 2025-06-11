@@ -44,7 +44,7 @@ int main() {
     int wybor;
     bool programDziala = true;
     vector<STUDENT> powyzejSredniej;
-    
+
     while (programDziala) {
         cout << "\n--- MENU GLOWNE ---" << endl;
         cout << "1. Wyswietl oceny, srednie i oceny koncowe studentow." << endl;
@@ -56,16 +56,16 @@ int main() {
         cout << "7. Zapisz zaktualizowane dane do nowego pliku" << endl;
         cout << "0. Wyjdz z programu." << endl;
         cout << "Wybierz opcje: ";
-        
+
         wybor = pobierzIntZWalidacja("", 0, 7);
         switch (wybor) {
             case 1:
                 // Obliczenie srednich i ocen
-                for (auto& student : studenci) { // od C++11; automatyczne wykrycie typu
+                for (STUDENT& student : studenci) {
                     student.srednia = obliczSrednia(student.oceny, 6);
                     student.ocenaKoncowa = okreslOceneKoncowa(student.srednia);
                 }
-                
+
                 // Wyswietlenie wynikow
                 cout << "-------------------OPCJA 1-----------------------------" << endl;
                 cout << "Dane studentow:" << endl;
@@ -75,8 +75,8 @@ int main() {
                     << setw(10) << "Srednia"
                     << "Ocena koncowa" << endl;
                 cout << "--------------------------------------------------------------------" << endl;
-                
-                for (const auto& student : studenci) {
+
+                for (const STUDENT& student : studenci) {
                     cout << setw(20) << left << student.imieNazwisko << " ";
                     // Wyswietlanie ocen
                     cout << "[";
@@ -85,31 +85,31 @@ int main() {
                         if (i < 5) cout << ", ";
                     }
                     cout << "] ";
-                    
+
                     // Wyswietlanie sredniej i oceny koncowej
                     cout << setw(9) << fixed << setprecision(2) << student.srednia << " ";
                     cout << student.ocenaKoncowa;
                     cout << endl;
                 }
-                
+
                 break;
             case 2: {
                 // Obliczenie sredniej wszystkich
                 double sredniaWszystkich = obliczSredniaWszystkich(studenci);
                 int powyzej = liczbaStudentowPowyzejSredniej(studenci, sredniaWszystkich);
-                
+
                 cout << "-------------------OPCJA 2-----------------------------" << endl;
                 cout << "Srednia wszystkich studentow = " << sredniaWszystkich << endl;
                 cout << "Ilosc studentow powyzej sredniej: " << powyzej << endl;
                 cout << "--------------------------------------------------------------------" << endl;
-                
+
                 // 1 petla do dwoch zastosowan: 1 wyswietlanie, 2 przechowanie tych powSr do zapisu (zamiast dwoch petli)
                 cout << "Studenci powyzej sredniej:" << endl;
-                for (const auto& student : studenci) {
+                for (const STUDENT& student : studenci) {
                     if (student.srednia > sredniaWszystkich) {
                         cout << setw(20) << left << student.imieNazwisko << " ";
                         cout << setw(3) << fixed << setprecision(2) << student.srednia << endl;
-                        
+
                         powyzejSredniej.push_back(student); // Dodaj do wektora do zapisu, na koniec
                     }
                 }
@@ -189,7 +189,7 @@ double obliczSredniaWszystkich(const vector<STUDENT>& studenci) {
     if (studenci.empty()) return 0;
     
     double suma = 0;
-    for (const auto& student : studenci) {
+    for (const STUDENT& student : studenci) {
         suma += student.srednia;
     }
     return suma / studenci.size();
@@ -211,7 +211,7 @@ int liczbaStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double sredn
 vector<STUDENT> znajdzStudentowPowyzejSredniej(const vector<STUDENT>& studenci, double progSredniej) {
     vector<STUDENT> wynik;
     
-    for (const auto& student : studenci) {
+    for (const STUDENT& student : studenci) {
         if (student.srednia > progSredniej) {
             wynik.push_back(student);
         }
@@ -229,7 +229,7 @@ bool zapiszSrednieDoPliku(const vector<STUDENT>& studenci, const string& nazwaPl
     }
     
     // 2. Zapisz kazdego studenta
-    for (const auto& student : studenci) {
+    for (const STUDENT& student : studenci) {
         plik << student.imieNazwisko << " "
              << student.srednia << " "
              << student.ocenaKoncowa << endl;
@@ -240,45 +240,45 @@ bool zapiszSrednieDoPliku(const vector<STUDENT>& studenci, const string& nazwaPl
         cout << "Blad podczas zapisu!" << endl;
         return false;
     }
-    
+
     return true;
 }
 
 void wyszukajIWyswietlStudenta(const vector<STUDENT>& studenci) {
     while (true) {
         string szukaneImieNazwisko;
-        
+
         cout << "\nABY WYSZUKAC STUDENTA, PODAJ IMIE I NAZWISKO (lub wpisz 'q' aby wyjsc): ";
         getline(cin, szukaneImieNazwisko);
-        
+
         // Mozliwosc wyjscia z funkcji
         if (szukaneImieNazwisko == "q" || szukaneImieNazwisko == "Q") {
             break;
         }
-        
+
         bool znaleziono = false;
-        for (const auto& student : studenci) {
+        for (const STUDENT& student : studenci) {
             if (student.imieNazwisko == szukaneImieNazwisko) {
                 cout << "\n=== ZNALEZIONO STUDENTA ===" << endl;
                 cout << "Imie i nazwisko: " << student.imieNazwisko << endl;
                 cout << "Srednia: " << fixed << setprecision(2) << student.srednia << endl;
-                
+
                 cout << "Oceny: ";
                 for (int i = 0; i < 6; i++) {
                     cout << student.oceny[i] << " ";
                 }
                 cout << endl;
-                
+
                 znaleziono = true;
                 break;
             }
         }
         cout << endl;
-        
+
         if (!znaleziono) {
             cout << "\nNie znaleziono studenta: " << szukaneImieNazwisko << endl;
             cout << "Dostepni studenci:\n";
-            for (const auto& student : studenci) {
+            for (const STUDENT& student : studenci) {
                 cout << "- " << student.imieNazwisko << endl;
             }
             cout << "\nSprobuj ponownie." << endl;
@@ -288,7 +288,7 @@ void wyszukajIWyswietlStudenta(const vector<STUDENT>& studenci) {
             cout << "\nCzy chcesz wyszukac kolejnego studenta? (t/n): ";
             string decyzja;
             getline(cin, decyzja);
-            
+
             if (decyzja != "t" && decyzja != "T") {
                 break;
             }
@@ -316,19 +316,19 @@ int pobierzIntZWalidacja(const string& komunikat, int minVal, int maxVal) {
 void zmodyfikujOceneStudenta(vector<STUDENT>& studenci) {
     string szukaneImieNazwisko;
     bool studentZnaleziony = false;
-    
+
     cout << "Podaj imie i nazwisko studenta do zmiany oceny: ";
     getline(cin, szukaneImieNazwisko);
-    for (auto& s : studenci) {
+    for (STUDENT& s : studenci) {
         if (s.imieNazwisko == szukaneImieNazwisko) {
             studentZnaleziony = true;
-            
+
             cout << "Bieżące oceny: ";
             for (size_t i = 0; i < 6; ++i) {
                 cout << (i + 1) << ": " << s.oceny[i] << " ";
             }
             cout << endl;
-            
+
             int indeksDoZmiany = pobierzIntZWalidacja(
                                                       "Ktora ocene zmienic (podaj numer, np. 1 dla pierwszej): ",
                                                       1, 6
@@ -339,7 +339,7 @@ void zmodyfikujOceneStudenta(vector<STUDENT>& studenci) {
                                                  );
             s.oceny[indeksDoZmiany - 1] = nowaOcena;
             cout << "Ocena zmieniona pomyslnie!" << endl;
-            
+
             cout << "Zaktualizowane oceny: ";
             for (size_t i = 0; i < 6; ++i) {
                 cout << (i + 1) << ": " << s.oceny[i] << " ";
@@ -347,7 +347,7 @@ void zmodyfikujOceneStudenta(vector<STUDENT>& studenci) {
             cout << endl;
             return;
         }
-        
+
     }
     cout << "Student o podanym imieniu i nazwisku nie znaleziony." << endl;
 }
@@ -358,8 +358,8 @@ bool zapiszZaktualizowaneDaneDoPliku(const vector<STUDENT>& studenci, const stri
         cerr << "Nie można otworzyć pliku " << nazwaPliku << endl;
         return false;
     }
-    
-    for (const auto& student : studenci) {
+
+    for (const STUDENT& student : studenci) {
         plik << student.imieNazwisko << "\n";
         for (int i = 0; i < 6; ++i) {
             plik << student.oceny[i];
@@ -367,7 +367,7 @@ bool zapiszZaktualizowaneDaneDoPliku(const vector<STUDENT>& studenci, const stri
         }
         plik << "\n";
     }
-    
+
     if (!plik.good()) {
         cerr << "Błąd podczas zapisu pełnych danych!" << endl;
         return false;
@@ -377,7 +377,7 @@ bool zapiszZaktualizowaneDaneDoPliku(const vector<STUDENT>& studenci, const stri
 }
 void dodajStudenta(vector<STUDENT>& studenci) {
     STUDENT nowyStudent;
-    
+
     cout << "--- Dodawanie nowego studenta ---" << endl;
     cout << "Podaj imie i nazwisko nowego studenta: ";
     getline(cin, nowyStudent.imieNazwisko);
