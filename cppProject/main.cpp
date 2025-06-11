@@ -398,6 +398,6 @@ string okreslOceneKoncowa(double srednia) {
     else if (srednia >= 71) return "dobry";
     else if (srednia >= 61) return "dostateczny plus";
     else if (srednia >= 51) return "dostateczny";
-    else return "niedostateczny";
+    return "niedostateczny";
 }
 
