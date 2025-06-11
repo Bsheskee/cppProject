@@ -2,7 +2,7 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 TARGET = program
-SOURCE = cppProject/main.cpp
+SOURCE = main.cpp
 
 # Default target
 all: $(TARGET)
